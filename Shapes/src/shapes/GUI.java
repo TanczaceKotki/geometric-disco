@@ -23,17 +23,20 @@ public class GUI extends javax.swing.JFrame {
     private class ShapeModifyListener implements TableModelListener {
         @Override
         public void tableChanged(TableModelEvent e) {
+            
             int rowIndex = jTable1.getSelectedRow();
-            if(rowIndex > 0){
+            if(rowIndex >= 0){
                 DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
                 String name = (String)model.getValueAt(rowIndex, 0);
                 double translateX = (double)model.getValueAt(rowIndex, 2);
                 double translateY = (double)model.getValueAt(rowIndex, 3);
-                double rotation = (double)model.getValueAt(rowIndex, 4);
+                double rotation = (double)model.getValueAt(rowIndex, 4) * Math.PI / 180.0;
                 collisionDomain.updateShape(rowIndex, name, new Vector2(translateX, translateY), rotation);
                 jTextArea1.setText(collisionDomain.getCollisionsDesc(collisionDomain.getShape(rowIndex)));
-                
             }
+            redrawCanvas();
+            
+            
         }
         
     }
@@ -45,12 +48,19 @@ public class GUI extends javax.swing.JFrame {
     
     //Tymczasowo
     public void createShapes() {
-        Ellipse ellipse = new Ellipse(300, 200);
-        ellipse.setPosition(new Vector2(250, 150));
-        collisionDomain.addShape(ellipse);
         Rect rect = new Rect(150, 100);
         rect.setPosition(new Vector2(400, 150));
         collisionDomain.addShape(rect);
+        Rect rect2 = new Rect(150, 100);
+        rect2.setPosition(new Vector2(420, 150));
+        collisionDomain.addShape(rect2);
+        Ellipse ellipse = new Ellipse(300, 200);
+        ellipse.setPosition(new Vector2(250, 150));
+        collisionDomain.addShape(ellipse);
+        /*Ellipse ellipse2 = new Ellipse(300, 200);
+        ellipse2.setPosition(new Vector2(250, 150));
+        collisionDomain.addShape(ellipse2);*/
+        
         displayShapes();
     }
     
@@ -69,7 +79,7 @@ public class GUI extends javax.swing.JFrame {
             row[1] = shape.getDescription();
             row[2] = shape.getPosition().x;
             row[3] = shape.getPosition().y;
-            row[4] = shape.getRotation();
+            row[4] = shape.getRotation() * 180.0 / Math.PI;
             model.addRow(row);
         }
         redrawCanvas();
@@ -78,8 +88,10 @@ public class GUI extends javax.swing.JFrame {
     public void redrawCanvas() {
         
         canvas.setLines(collisionDomain.getLines());
+        canvas.setCollisiondata(collisionDomain.getCollisionEdges());
         Dimension dimension = new Dimension(canvas.getPrefferedWidth(), canvas.getPrefferedHeight());
         canvas.setPreferredSize(dimension);
+        canvas.setSize(dimension);
         canvas.repaint();
         
     }
@@ -119,11 +131,11 @@ public class GUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 828, Short.MAX_VALUE)
+            .addGap(0, 866, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
+            .addGap(0, 449, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("File", jPanel1);
@@ -176,11 +188,11 @@ public class GUI extends javax.swing.JFrame {
         canvas.setLayout(canvasLayout);
         canvasLayout.setHorizontalGroup(
             canvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 826, Short.MAX_VALUE)
+            .addGap(0, 864, Short.MAX_VALUE)
         );
         canvasLayout.setVerticalGroup(
             canvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 298, Short.MAX_VALUE)
+            .addGap(0, 309, Short.MAX_VALUE)
         );
 
         canvasContainer.setViewportView(canvas);
@@ -211,11 +223,11 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 871, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
         );
 
         jTabbedPane1.getAccessibleContext().setAccessibleName("Tabs");
