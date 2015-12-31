@@ -81,7 +81,21 @@ public class LineSegment implements CollisionEdge {
 
     @Override
     public String getDescription() {
-        return "Odcinek: "+left.toString()+", "+right.toString();
+        return "Segment: "+left.toString()+", "+right.toString();
+    }
+
+    @Override
+    public Vector2[] getPoints() {
+        Vector2[] points = new Vector2[2];
+        points[0] = left;
+        points[1] = right;
+        return  points;
+        
+    }
+
+    @Override
+    public int getPointCount() {
+        return 2;
     }
     
 }

@@ -59,4 +59,17 @@ public class Ellipse extends Shape {
         
         
     }
+
+    @Override
+    public boolean insideTest(Vector2 point) {
+        Vector2 testPoint = new Vector2(point.x, point.y);
+        testPoint.translate(new Vector2(-position.x, -position.y));
+        double scale = height/width;
+        testPoint.x = testPoint.x * scale;
+        if(testPoint.length() <= height) {
+            return true;
+        }
+        return false;
+        
+    }
 }

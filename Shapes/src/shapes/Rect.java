@@ -58,4 +58,16 @@ public class Rect extends Shape {
         polyLine.add(new LineSegment(corners[3], corners[0]));
         
     }
+
+    @Override
+    public boolean insideTest(Vector2 point) {
+        Vector2 testPoint = new Vector2(point.x, point.y);
+        testPoint.translate(new Vector2(-position.x, -position.y));
+        if(testPoint.x <= width/2 && testPoint.x >= -width/2) {
+            if(testPoint.y <= height/2 && testPoint.y >= -height/2) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

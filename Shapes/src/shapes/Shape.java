@@ -58,6 +58,8 @@ public abstract class Shape {
         callObservers();
     }
     
+    public abstract boolean insideTest(Vector2 point);
+    
     void callObservers() {
         for(ShapeObserver observer : observers) {
             observer.onModify(this);

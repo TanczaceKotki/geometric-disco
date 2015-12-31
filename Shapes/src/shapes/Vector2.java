@@ -28,7 +28,7 @@ public class Vector2 implements CollisionEdge {
 
     
     public String toString() {
-        return "("+x+", "+y+")";
+        return "("+String.format("%.2f", x) +", "+String.format("%.2f", y) +")";
     }
     
     public static Vector2 diff(Vector2 v1, Vector2 v2) {
@@ -54,8 +54,31 @@ public class Vector2 implements CollisionEdge {
 
     @Override
     public String getDescription() {
-        return "Punkt: "+this.toString();
+        return "Point: "+this.toString();
+    }
+
+    @Override
+    public Vector2[] getPoints() {
+        Vector2[] points = new Vector2[1];
+        points[0] = this;
+        return  points;
     }
     
+    public boolean equals(Vector2 other) {
+        if(x == other.x && y == other.y) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public double length() {
+        return Math.sqrt(x*x + y*y);
+    }
+
+    @Override
+    public int getPointCount() {
+        return 1;
+    }
     
 }
