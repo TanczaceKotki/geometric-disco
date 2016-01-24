@@ -15,6 +15,7 @@ public class Canvas extends JPanel {
         collisionEdges = new ArrayList<CollisionEdge>();
     }
     
+    int margin = 5;
     int prefferedWidth = 0;
     int prefferedHeight = 0;
     ArrayList<LineSegment> lines;
@@ -37,8 +38,8 @@ public class Canvas extends JPanel {
                 prefferedHeight = (int)ls.right.y;
 
         }
-        prefferedWidth += 5;
-        prefferedHeight += 5;
+        prefferedWidth += margin;
+        prefferedHeight += margin;
     }
     
     public void setCollisiondata(ArrayList<CollisionEdge> newCollisionEdges) {

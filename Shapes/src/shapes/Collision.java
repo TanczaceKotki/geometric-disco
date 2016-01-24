@@ -6,6 +6,7 @@ public class Collision {
     
     Shape shape1;
     Shape shape2;
+    Shape included = null;
     public boolean overlap = false;
     
     public Collision(Shape newShape1, Shape newShape2) {
@@ -30,17 +31,26 @@ public class Collision {
     }
     
     public String getDesctiption(Shape shape) {
+        Shape otherShape;
         String otherShapeName;
         if(shape == shape1) {
-            otherShapeName = shape2.getName();
+            otherShape = shape2;
         } else {
-            otherShapeName = shape1.getName();
+            otherShape = shape1;
         }
-        
+        otherShapeName = otherShape.getName();
         String description = "";
         
         if(overlap) {
             description += "Overlaps: "+otherShapeName;
+            
+        } else if(included != null) {
+            if(included == otherShape) {
+                description += "Contains: "+otherShape.name;
+            } else {
+                description += "Contained in: "+otherShape.name;
+            }
+            
         } else {
         
             ArrayList<CollisionEdge> filtered = getFilteredEdges();

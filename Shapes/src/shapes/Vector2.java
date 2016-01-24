@@ -25,7 +25,11 @@ public class Vector2 implements CollisionEdge {
         this.y += vector.y;
     }
     
-
+    public void normalize() {
+        double len = length();
+        this.x = this.x / len;
+        this.y = this.y / len;
+    }
     
     public String toString() {
         return "("+String.format("%.2f", x) +", "+String.format("%.2f", y) +")";
@@ -51,7 +55,10 @@ public class Vector2 implements CollisionEdge {
         return v1.x*v2.x + v1.y*v2.y;
     }
 
-
+    public static Vector2 zero() {
+        return new Vector2(0.0, 0.0);
+    }
+    
     @Override
     public String getDescription() {
         return "Point: "+this.toString();

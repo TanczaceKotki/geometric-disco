@@ -78,9 +78,13 @@ public class CollisionDomain implements ShapeObserver {
         if(collision.hasEdges()) {
             return collision;
         } else {
-            
-            
-            
+            if(shape1.insideTest(shape2.getPolyLine().get(0).left)) {
+                collision.included = shape2;
+                return collision;
+            } else if(shape2.insideTest(shape1.getPolyLine().get(0).left)) {
+                collision.included = shape1;
+                return collision;
+            }
             return null;
         }
     }

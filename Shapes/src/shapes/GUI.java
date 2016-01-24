@@ -2,7 +2,11 @@ package shapes;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -46,22 +50,37 @@ public class GUI extends javax.swing.JFrame {
      */
     CollisionDomain collisionDomain;
     
-    //Tymczasowo
+
     public void createShapes() {
-        Rect rect = new Rect(150, 100);
+        /*
+        Rect rect = new Rect(100, 50);
         rect.setPosition(new Vector2(400, 150));
         collisionDomain.addShape(rect);
-        Rect rect2 = new Rect(150, 100);
-        rect2.setPosition(new Vector2(420, 150));
-        collisionDomain.addShape(rect2);
-        Ellipse ellipse = new Ellipse(300, 200);
-        ellipse.setPosition(new Vector2(250, 150));
-        collisionDomain.addShape(ellipse);
-        /*Ellipse ellipse2 = new Ellipse(300, 200);
-        ellipse2.setPosition(new Vector2(250, 150));
-        collisionDomain.addShape(ellipse2);*/
+        
+        ArrayList<Vector2> points = new ArrayList<Vector2>();
+        points.add(new Vector2(100, 100));
+        points.add(new Vector2(200, 100));
+        points.add(new Vector2(150, 50));
+        points.add(new Vector2(150, 150));
+        
+        Ellipse ellipse2 = new Ellipse(points);
+        collisionDomain.addShape(ellipse2);
+        */
+        
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File("test.bmp"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        Detector detector = new Detector(image);
+        for(Shape shape: detector.shapes) {
+            collisionDomain.addShape(shape);
+        }
         
         displayShapes();
+        
     }
     
     public void displayShapes() {
