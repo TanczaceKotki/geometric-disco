@@ -10,19 +10,16 @@ import static org.junit.Assert.*;
 
 public class CollisionTest {
     
-    public CollisionTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    Collision instance;
+    Shape shape1;
+    Shape shape2;
     
     @Before
     public void setUp() {
+        shape1 = new Rect(100, 100);
+        shape2 = new Rect(100, 100);
+        shape2.setPosition(new Vector2(50, 50));
+        instance = new Collision(shape1, shape2);
     }
     
     @After
@@ -35,12 +32,14 @@ public class CollisionTest {
     @Test
     public void testHasEdges() {
         System.out.println("hasEdges");
-        Collision instance = null;
-        boolean expResult = false;
+
         boolean result = instance.hasEdges();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(false, result);
+        
+        instance.addCollisionEdge(new Vector2(100, 50));
+        instance.addCollisionEdge(new Vector2(50, 100));
+        result = instance.hasEdges();
+        assertEquals(true, result);
     }
 
     /**
@@ -49,27 +48,14 @@ public class CollisionTest {
     @Test
     public void testAddCollisionEdge() {
         System.out.println("addCollisionEdge");
-        CollisionEdge ce = null;
-        Collision instance = null;
+        CollisionEdge ce = new LineSegment(new Vector2(100, 0), new Vector2(100, 100));
+        assertEquals(false, instance.edges.contains(ce));
+        
         instance.addCollisionEdge(ce);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(true, instance.edges.contains(ce));
+        
     }
 
-    /**
-     * Test of getDesctiption method, of class Collision.
-     */
-    @Test
-    public void testGetDesctiption() {
-        System.out.println("getDesctiption");
-        Shape shape = null;
-        Collision instance = null;
-        String expResult = "";
-        String result = instance.getDesctiption(shape);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of getFilteredEdges method, of class Collision.
@@ -77,12 +63,15 @@ public class CollisionTest {
     @Test
     public void testGetFilteredEdges() {
         System.out.println("getFilteredEdges");
-        Collision instance = null;
-        ArrayList<CollisionEdge> expResult = null;
-        ArrayList<CollisionEdge> result = instance.getFilteredEdges();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.edges.clear();
+        instance.addCollisionEdge(new Vector2(10, 10));
+        instance.addCollisionEdge(new Vector2(10, 10));
+        instance.addCollisionEdge(new Vector2(20, 20));
+        assertEquals(2, instance.getFilteredEdges().size());
+        
+        instance.addCollisionEdge(new LineSegment(new Vector2(10, 10), new Vector2(20, 20)));
+        assertEquals(1, instance.getFilteredEdges().size());
+        
     }
 
     /**
@@ -91,13 +80,12 @@ public class CollisionTest {
     @Test
     public void testConcerns() {
         System.out.println("concerns");
-        Shape shape = null;
-        Collision instance = null;
-        boolean expResult = false;
-        boolean result = instance.concerns(shape);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Shape anotherShape = new Rect(200, 200);
+
+        assertEquals(false, instance.concerns(anotherShape));
+        assertEquals(true, instance.concerns(shape1));
+        assertEquals(true, instance.concerns(shape2));
+
     }
     
 }
