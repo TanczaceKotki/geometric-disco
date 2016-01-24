@@ -34,17 +34,7 @@ public class CollisionDomain implements ShapeObserver {
     
     public int getShapeCount() {
         return shapes.size();
-    }
-
-    public ArrayList<LineSegment> getLines() {
-        ArrayList<LineSegment> lines = new ArrayList<LineSegment>();
-        for(Shape shape : shapes) {
-            lines.addAll(shape.getPolyLine());
-        }
-        
-        return lines;
-    }
-    
+    }    
 
     
     Collision collisionCheck(Shape shape1, Shape shape2) {
@@ -108,7 +98,8 @@ public class CollisionDomain implements ShapeObserver {
         }
         return edges;
     }
-       
+      
+    
     public String getCollisionsDesc(Shape shape) {
         String result = "";
         for(Collision collision : getCollisions(shape)) {

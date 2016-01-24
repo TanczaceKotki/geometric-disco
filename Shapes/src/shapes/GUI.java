@@ -101,13 +101,13 @@ public class GUI extends javax.swing.JFrame {
             row[4] = shape.getRotation() * 180.0 / Math.PI;
             model.addRow(row);
         }
+               
         redrawCanvas();
     }
     
     public void redrawCanvas() {
         
-        canvas.setLines(collisionDomain.getLines());
-        canvas.setCollisiondata(collisionDomain.getCollisionEdges());
+        canvas.recalculateSize();
         Dimension dimension = new Dimension(canvas.getPrefferedWidth(), canvas.getPrefferedHeight());
         canvas.setPreferredSize(dimension);
         canvas.setSize(dimension);
@@ -116,8 +116,9 @@ public class GUI extends javax.swing.JFrame {
     }
     
     public GUI() {
-        collisionDomain = new CollisionDomain();        
+        collisionDomain = new CollisionDomain();
         initComponents();
+        canvas.setDomain(collisionDomain);
         createShapes();
 
     }

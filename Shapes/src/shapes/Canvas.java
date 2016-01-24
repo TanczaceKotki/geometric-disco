@@ -10,40 +10,13 @@ import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
     
-    public Canvas() {
-        lines = new ArrayList<LineSegment>();
-        collisionEdges = new ArrayList<CollisionEdge>();
-    }
-    
     int margin = 5;
     int prefferedWidth = 0;
     int prefferedHeight = 0;
-    ArrayList<LineSegment> lines;
-    ArrayList<CollisionEdge> collisionEdges;
+    CollisionDomain collisionDomain;
     
-    public void setLines( ArrayList<LineSegment> newLines) {
-        lines = newLines;
-        prefferedWidth = 0;
-        prefferedHeight = 0;
-        for(LineSegment ls : lines) {
-            
-            if(ls.left.x > prefferedWidth)
-                prefferedWidth = (int)ls.left.x;
-            if(ls.right.x > prefferedWidth)
-                prefferedWidth = (int)ls.right.x;
-            
-            if(ls.left.y > prefferedHeight)
-                prefferedHeight = (int)ls.left.y;
-            if(ls.right.y > prefferedHeight)
-                prefferedHeight = (int)ls.right.y;
-
-        }
-        prefferedWidth += margin;
-        prefferedHeight += margin;
-    }
-    
-    public void setCollisiondata(ArrayList<CollisionEdge> newCollisionEdges) {
-        collisionEdges = newCollisionEdges;
+    public void setDomain(CollisionDomain domain) {
+        collisionDomain = domain;
     }
     
     public int getPrefferedWidth() {
@@ -54,19 +27,55 @@ public class Canvas extends JPanel {
         return prefferedHeight;
     }
     
+    public void recalculateSize() {
+        
+        prefferedWidth = 0;
+        prefferedHeight = 0;
+        
+        for(int i=0; i<collisionDomain.getShapeCount(); i++) {
+            Shape shape = collisionDomain.getShape(i);
+            for(LineSegment ls :shape.getPolyLine()) {
+                
+                if((int)ls.left.x > prefferedWidth)
+                    prefferedWidth = (int)ls.left.x;
+                if((int)ls.right.x > prefferedWidth)
+                    prefferedWidth = (int)ls.right.x;
+                
+                if((int)ls.left.y > prefferedHeight)
+                    prefferedHeight = (int)ls.left.y;
+                if((int)ls.right.y > prefferedHeight)
+                    prefferedHeight = (int)ls.right.y;
+                
+            }
+        }
+        
+        prefferedWidth += margin;
+        prefferedHeight += margin;
+    }
+    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        //Cleaning
         g.setColor(Color.white);
         g.clearRect(0, 0, prefferedWidth, prefferedHeight);
-        g.setColor(Color.black);
- 
-        for(LineSegment ls : lines) {
-            g.drawLine((int)Math.round(ls.left.x), (int)Math.round(ls.left.y), (int)Math.round(ls.right.x), (int)Math.round(ls.right.y));
+
+        
+        //Shapes
+        for(int i=0; i<collisionDomain.getShapeCount(); i++) {
+            Shape shape = collisionDomain.getShape(i);
+            g.setColor(shape.getColor());
+            for(LineSegment ls :shape.getPolyLine()) {
+                g.drawLine((int)Math.round(ls.left.x), (int)Math.round(ls.left.y), (int)Math.round(ls.right.x), (int)Math.round(ls.right.y));
+            }
+            g.fillRect((int)Math.round(shape.getPosition().x)-2, (int)Math.round(shape.getPosition().y)-2, 4, 4);
         }
+
+        //Collisions
         g.setColor(Color.red);
-        for(CollisionEdge ce : collisionEdges) {
+        for(CollisionEdge ce : collisionDomain.getCollisionEdges()) {
             Vector2 pref = null;            
             for(Vector2 point : ce.getPoints()) {
                 if(ce.getPointCount()==1)
@@ -78,5 +87,6 @@ public class Canvas extends JPanel {
                 }
             } 
         }
+        
     }
 }

@@ -1,11 +1,15 @@
 package shapes;
 
+import java.awt.Color;
+import static java.lang.Math.random;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Shape {
     
     String name = "";
     Vector2 position;
+    Color color;
     double rotation;
     ArrayList<LineSegment> polyLine;
     ArrayList<ShapeObserver> observers;
@@ -14,6 +18,7 @@ public abstract class Shape {
     public Shape() {
         polyLine = new ArrayList<LineSegment>();
         observers = new ArrayList<ShapeObserver>();
+        color = Shape.getRandomColor();
     }
     
     //Observers
@@ -51,6 +56,10 @@ public abstract class Shape {
         rotation = eulerAngle * Math.PI / 180.0;
     }
     
+    public Color getColor() {
+        return color;
+    }
+    
     abstract void recalculatePolyLine();
     
     void notifyGeometryModif() {
@@ -65,5 +74,15 @@ public abstract class Shape {
             observer.onModify(this);
         }
     }
+    
+    static Random random = new Random();
+    public static Color getRandomColor() {
+        float hue = random.nextFloat();
+        float saturation = 0.9f;
+        float luminance = 0.4f;
+        Color color = Color.getHSBColor(hue, saturation, luminance);
+        return color;
+    }
+    
     
 }
