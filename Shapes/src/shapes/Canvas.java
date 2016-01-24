@@ -58,35 +58,36 @@ public class Canvas extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        //Cleaning
-        g.setColor(Color.white);
-        g.clearRect(0, 0, prefferedWidth, prefferedHeight);
+        if(collisionDomain != null) {
+            //Cleaning
+            g.setColor(Color.white);
+            g.clearRect(0, 0, prefferedWidth, prefferedHeight);
 
-        
-        //Shapes
-        for(int i=0; i<collisionDomain.getShapeCount(); i++) {
-            Shape shape = collisionDomain.getShape(i);
-            g.setColor(shape.getColor());
-            for(LineSegment ls :shape.getPolyLine()) {
-                g.drawLine((int)Math.round(ls.left.x), (int)Math.round(ls.left.y), (int)Math.round(ls.right.x), (int)Math.round(ls.right.y));
-            }
-            g.fillRect((int)Math.round(shape.getPosition().x)-2, (int)Math.round(shape.getPosition().y)-2, 4, 4);
-        }
 
-        //Collisions
-        g.setColor(Color.red);
-        for(CollisionEdge ce : collisionDomain.getCollisionEdges()) {
-            Vector2 pref = null;            
-            for(Vector2 point : ce.getPoints()) {
-                if(ce.getPointCount()==1)
-                    g.fillOval((int)Math.round(point.x)-4, (int)Math.round(point.y)-4, 8, 8);
-                if(pref != null) {
-                    g.drawLine((int)Math.round(point.x), (int)Math.round(point.y), (int)Math.round(pref.x), (int)Math.round(pref.y));
-                } else {
-                    pref = point;
+            //Shapes
+            for(int i=0; i<collisionDomain.getShapeCount(); i++) {
+                Shape shape = collisionDomain.getShape(i);
+                g.setColor(shape.getColor());
+                for(LineSegment ls :shape.getPolyLine()) {
+                    g.drawLine((int)Math.round(ls.left.x), (int)Math.round(ls.left.y), (int)Math.round(ls.right.x), (int)Math.round(ls.right.y));
                 }
-            } 
+                g.fillRect((int)Math.round(shape.getPosition().x)-2, (int)Math.round(shape.getPosition().y)-2, 4, 4);
+            }
+
+            //Collisions
+            g.setColor(Color.red);
+            for(CollisionEdge ce : collisionDomain.getCollisionEdges()) {
+                Vector2 pref = null;            
+                for(Vector2 point : ce.getPoints()) {
+                    if(ce.getPointCount()==1)
+                        g.fillOval((int)Math.round(point.x)-4, (int)Math.round(point.y)-4, 8, 8);
+                    if(pref != null) {
+                        g.drawLine((int)Math.round(point.x), (int)Math.round(point.y), (int)Math.round(pref.x), (int)Math.round(pref.y));
+                    } else {
+                        pref = point;
+                    }
+                } 
+            }
         }
-        
     }
 }

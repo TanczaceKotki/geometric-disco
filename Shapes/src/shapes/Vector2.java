@@ -71,10 +71,11 @@ public class Vector2 implements CollisionEdge {
         return  points;
     }
     
-    public boolean equals(Vector2 other) {
-        if(x == other.x && y == other.y) {
-            return true;
-        } else {
+    public boolean equals(Object other) {
+        try {
+            return (x == ((Vector2)other).x && y == ((Vector2)other).y);
+            
+        } catch(Exception e) {
             return false;
         }
     }

@@ -11,8 +11,7 @@ public class Rect extends Shape {
     public Rect(ArrayList<Vector2> pixels, Vector2 center) {
        
        super();
-       counter++;
-       name = "Rect "+counter;
+       assignName();
        
        Vector2 negativeCenter = Vector2.diff(Vector2.zero(), center);
        for(Vector2 pixel : pixels) {
@@ -66,17 +65,22 @@ public class Rect extends Shape {
        this.rotation = minDistAngle;
        this.position = center;
        
-   }
-   
+    }
+
     
     public Rect(double newWidth, double newHeight) {
         super();
-        counter++;
-        name = "Rect "+counter;
+        assignName();
+        
         width = newWidth;
         height = newHeight;
         position = new Vector2(0.0, 0.0);
         rotation = 0.0;
+    }
+    
+    void assignName() {
+        counter++;
+        name = "Rect "+counter;
     }
     
     public double getWidth() {return width;}

@@ -233,12 +233,13 @@ public class Detector {
                 }
                 minLenR.normalize();
                 maxLenR.normalize();
+                
                 double minMaxAngle = Math.acos(Vector2.dotProduct(minLenR, maxLenR));
                 minMaxAngle *= 180.0 / Math.PI;
-                
+            
                 //Shape creation
                 Shape shape;
-                if(Math.abs(minMaxAngle - 90.0) > 10.0) {
+                if(Math.abs(minMaxAngle - 90.0) > 5.0) {
                     shape = new Rect(continousPoints, center);
                 } else {
                     shape = new Ellipse(continousPoints, center);

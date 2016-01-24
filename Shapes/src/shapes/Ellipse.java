@@ -11,8 +11,7 @@ public class Ellipse extends Shape {
    public Ellipse(ArrayList<Vector2> pixels, Vector2 center) {
        
        super();
-       counter++;
-       name = "Ellipse "+counter;
+       assignName();
       
        
        Vector2 negativeCenter = Vector2.diff(Vector2.zero(), center);
@@ -63,14 +62,19 @@ public class Ellipse extends Shape {
    
    public Ellipse(double newWidth, double newHeight) {
         super();
-        counter++;
-        name = "Ellipse "+counter;
+        assignName();
+        
         width = newWidth;
         height = newHeight;
         position = new Vector2(0.0, 0.0);
         rotation = 0.0;
     }
     
+    void assignName() {
+        counter++;
+        name = "Ellipse "+counter;
+    }
+   
     public double getWidth() {return width;}
     public void setWidth(double newWidth) {
         width = newWidth;

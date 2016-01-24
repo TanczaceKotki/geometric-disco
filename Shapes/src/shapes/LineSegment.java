@@ -93,6 +93,18 @@ public class LineSegment implements CollisionEdge {
         
     }
 
+    public boolean equals(Object other) {
+        try {
+            LineSegment otherSegment = (LineSegment)other;
+            boolean opt1 = (left.equals(otherSegment.left) && right.equals(otherSegment.right));
+            boolean opt2 = (left.equals(otherSegment.right) && right.equals(otherSegment.left));
+            return opt1 || opt2;
+            
+        } catch(Exception e) {
+            return false;
+        }
+    }
+    
     @Override
     public int getPointCount() {
         return 2;
