@@ -93,6 +93,7 @@ public class LineSegment implements CollisionEdge {
         
     }
 
+    @Override
     public boolean equals(Object other) {
         try {
             LineSegment otherSegment = (LineSegment)other;

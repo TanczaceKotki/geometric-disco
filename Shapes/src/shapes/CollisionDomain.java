@@ -32,6 +32,11 @@ public class CollisionDomain implements ShapeObserver {
         shape.setRotation(rotation);
     }
     
+    public void updateShape(int index, Vector2 position) {
+        Shape shape = shapes.get(index);
+        shape.setPosition(position);
+    }
+    
     public int getShapeCount() {
         return shapes.size();
     }    

@@ -5,6 +5,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.Console;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
@@ -14,6 +19,75 @@ public class Canvas extends JPanel {
     int prefferedWidth = 0;
     int prefferedHeight = 0;
     CollisionDomain collisionDomain;
+    private LineComponent line;
+    ArrayList<Vector2> midPos;
+    int tempDraggedShape;
+    
+    public Canvas() {
+        line = new LineComponent(0,0,0,0);
+        addMouseListener(new MouseListener() {
+
+          @Override
+          public void mouseClicked(MouseEvent e) { }
+
+          @Override
+          public void mousePressed(MouseEvent e) {  
+            loadMidPosTable();
+            line.changePos(e.getX(), e.getY(), e.getX(), e.getY());
+            findMidPos(e.getX(), e.getY());
+            repaint();
+          }
+
+          @Override
+          public void mouseReleased(MouseEvent e) { 
+            line.changePos(0,0,0,0);
+            moveShape(e.getX(), e.getY());
+            repaint();
+          }
+
+          @Override
+          public void mouseEntered(MouseEvent e) { }
+
+          @Override
+          public void mouseExited(MouseEvent e) { }
+
+        });
+        addMouseMotionListener(new MouseMotionListener() {
+
+          @Override
+          public void mouseDragged(MouseEvent e) {            
+            line.changePos(e.getX(), e.getY());
+            repaint();
+            //setLocation(myX + deltaX, myY + deltaY);
+          }
+
+          @Override
+          public void mouseMoved(MouseEvent e) { }
+
+        });
+    }
+    
+    public void loadMidPosTable() {
+        midPos = new ArrayList<>();
+        for (int i=0; i < collisionDomain.getShapeCount(); ++i) {
+            Shape sTemp = collisionDomain.getShape(i);
+            midPos.add(sTemp.getPosition());
+        }
+    }
+    
+    public void findMidPos(int x, int y) {
+        tempDraggedShape = -1;
+        for (int i = 0; i < midPos.size(); ++i) {
+            if (abs(midPos.get(i).x - x) < 4 && abs(midPos.get(i).y - y) < 4) {
+                tempDraggedShape = i;
+            }
+        }
+        
+    }
+    
+    public void moveShape(int x, int y) {
+        if (tempDraggedShape > -1) collisionDomain.updateShape(tempDraggedShape, new Vector2(x, y));
+    }
     
     public void setDomain(CollisionDomain domain) {
         collisionDomain = domain;
@@ -88,6 +162,11 @@ public class Canvas extends JPanel {
                     }
                 } 
             }
+            
+            g.setColor(Color.YELLOW);
+            g.drawLine(line.x1, line.y1, line.x2, line.y2);
         }
     }
+    
+    
 }
