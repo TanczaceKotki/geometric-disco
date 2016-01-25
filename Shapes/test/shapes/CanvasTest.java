@@ -28,23 +28,15 @@ public class CanvasTest {
     @Before
     public void setUp() {
         instance = new Canvas();
-        ArrayList<LineSegment> lines = new ArrayList<LineSegment>();
-        LineSegment segment1 = new LineSegment(
-            new Vector2(10, 20),
-            new Vector2(200, 150)
-        );
-        LineSegment segment2 = new LineSegment(
-            new Vector2(100, 30),
-            new Vector2(20, 220)
-        );
-        lines.add(segment1);
-        lines.add(segment2);
-        instance.setLines(lines);
+        CollisionDomain domain = new CollisionDomain();
+        instance.setDomain(domain);
+        Rect exampleRect = new Rect(100, 50);
+        domain.addShape(exampleRect);
         points = new ArrayList<Vector2>();
-        points.add(segment1.left);
-        points.add(segment1.right);
-        points.add(segment2.left);
-        points.add(segment2.right);
+        for(LineSegment ls : exampleRect.getPolyLine()) {
+            points.add(ls.left);
+            points.add(ls.right);
+        }
         
     }
     
@@ -57,6 +49,7 @@ public class CanvasTest {
      */
     @Test
     public void testGetPrefferedWidth() {
+        instance.recalculateSize();
         System.out.println("getPrefferedWidth");
         int expResult = 0;
         for(Vector2 point : points) {
@@ -75,6 +68,7 @@ public class CanvasTest {
      */
     @Test
     public void testGetPrefferedHeight() {
+        instance.recalculateSize();
         int expResult = 0;
         for(Vector2 point : points) {
             int y = (int)Math.round(point.y);
