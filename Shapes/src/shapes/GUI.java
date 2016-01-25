@@ -319,6 +319,7 @@ public class GUI extends javax.swing.JFrame {
             Image image = ImageIO.read(file);
             ImageIcon icon = new ImageIcon(image);
             preview.setIcon(icon);
+            collisionDomain.shapes.clear();
             
             //Loading file
             loadFile(path);
