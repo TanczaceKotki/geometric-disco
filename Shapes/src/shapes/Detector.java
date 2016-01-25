@@ -15,6 +15,7 @@ public class Detector {
     final int red = 16711680;
     final int green = 65280;
     final int blue = 255;
+    final int ll = 15;
     Image img;
     List<Shape> shapes;
 
@@ -50,7 +51,7 @@ public class Detector {
         }
     }
 
-    private double getAngle(Point previous, Point current){
+    public static double getAngle(Point previous, Point current){
         int x = current.x - previous.x;
         int y = current.y - previous.y;
         if(y >= 0){
@@ -127,6 +128,67 @@ public class Detector {
 
         return nearby;
     }
+    
+    public List<Point> getNextPoints(Point currentPoint, List<Point> points, int color){
+        List<Point> nearby = getNearby(currentPoint);
+        List<Point> ret = new ArrayList<Point>();
+        double angle = getLocalAngle(points, ll);
+        double bestDiff = 10000;
+        double bestDiff2 = 9999;
+        Point nextPixel = null;
+        Point nextPixel2 = null;
+        //System.out.println(getDeltaAngle(points,7,5));
+        for(Point p : nearby){
+            if(img.getPixel(p) == color){
+                continue;
+            }
+            double tmpAngle = getAngle(p, currentPoint);
+            double diff =  180 - Math.abs(Math.abs(angle - tmpAngle) - 180);
+            if(bestDiff > bestDiff2){
+                if(diff < bestDiff){
+                    bestDiff = diff;
+                    nextPixel = p;
+                }
+            }else{
+                if(diff < bestDiff2){
+                    bestDiff2 = diff;
+                    nextPixel2 = p;
+                }
+            }
+        }
+        if(bestDiff > bestDiff2){
+            nextPixel = nextPixel2;
+        }else if(bestDiff == bestDiff2){
+            for(int i = ll;i<points.size(); ++i){
+                angle = getLocalAngle(points, i);
+                double angle1 = getAngle(nextPixel, currentPoint);
+                double angle2 = getAngle(nextPixel2, currentPoint);
+                double diff1 =  180 - Math.abs(Math.abs(angle - angle1) - 180);
+                double diff2 =  180 - Math.abs(Math.abs(angle - angle2) - 180);
+                if(diff1 > diff2){
+                    nextPixel = nextPixel2;
+                    break;
+                }
+                if(diff2 > diff1){
+                    break;
+                }
+            }
+        }
+        if(nextPixel != null){
+            ret.add(nextPixel);
+        }
+        if(nextPixel2 != null){
+            ret.add(nextPixel2);
+        }
+        for(Point p : nearby){
+            if(!ret.contains(p)){
+                if(img.getPixel(p) != color){
+                    ret.add(p);
+                }
+            }
+        }
+        return ret;
+    }
 
     /*
     private void redraw(){
@@ -173,38 +235,87 @@ public class Detector {
                     continue;
                 }
                 int color = random.nextInt(16777213) + 1;
-                
-                img.setPixel(point, color);
-                ArrayList<Point>points = new ArrayList<>();
+                ArrayList<Point> points = new ArrayList<>();
                 points.add(point);
-                double angle;
-                while(true){
-                    Point currentPoint = nextPixel;
-                    nearby = getNearby(currentPoint);
-                    img.setPixel(currentPoint, color);
-                    angle = getLocalAngle(points, 4);
-                    double bestDiff = 9999;
-                    int count = 0;
-                    for(Point p : nearby){
-                        if(img.getPixel(p) == color){
-                            ++count;
-                            continue;
-                        }
-                        double tmpAngle = getAngle(p, currentPoint);
-                        double diff =  180 - Math.abs(Math.abs(angle - tmpAngle) - 180);
-                        if(diff < bestDiff){
-                            bestDiff = diff;
-                            nextPixel = p;
-                        }
-                    }
-                    points.add(currentPoint);
-                    if((nearby.size() - count) == 0){
-                        break;
+                points.add(nextPixel);
+                img.setPixel(point, color);
+                img.setPixel(nextPixel, color);
+                Point currentPoint = nextPixel;
+                boolean garbageCheck = false;
+                for(Point p: getNextPoints(currentPoint, points, color)){
+                    if(img.getPixel(p) == black){
+                        garbageCheck = true;
                     }
                 }
-                
-                
-                
+                if(!garbageCheck) {
+                    continue;
+                }
+                while(true){
+                    nearby = getNextPoints(currentPoint, points, color);
+                    if(nearby.size() == 0){
+                        break;
+                    }
+                    if(nearby.size() == 1){
+                        currentPoint = nearby.get(0);
+                        img.setPixel(currentPoint, color);
+                        points.add(currentPoint);
+                    }
+                    if(nearby.size() >= 2){
+                        nextPixel = nearby.get(0);
+                        List<Point> tmp1 = new ArrayList<Point>();
+                        tmp1.add(nextPixel);
+                        img.setPixel(nextPixel, color);
+                        List<Point> tmp2 = new ArrayList<Point>();
+                        Point choice1 = null;
+                        Point choice2 = null;
+                        try {
+                            for (int i = 0; i < 5; ++i) {
+                                nextPixel = getNextPoints(nextPixel, points, color).get(0);
+                                img.setPixel(nextPixel, color);
+                                tmp1.add(nextPixel);
+                            }
+                        }catch(Exception e){
+                            for (Point p : tmp1) {
+                                points.add(p);
+                            }
+                            currentPoint=nextPixel;
+                        }
+                        choice1 = nextPixel;
+                        nextPixel = nearby.get(1);
+                        tmp2.add(nextPixel);
+                        img.setPixel(nextPixel, color);
+                        try {
+                            for (int i = 0; i < 5; ++i) {
+                                nextPixel = getNextPoints(nextPixel, points, color).get(0);
+                                img.setPixel(nextPixel, color);
+                                tmp2.add(nextPixel);
+                            }
+                            choice2 = nextPixel;
+                        }catch(Exception e){
+                            currentPoint = choice1;
+                            for (Point p : tmp1) {
+                                points.add(p);
+                            }
+                        }
+                        if(choice2 != null) {
+                            double diff1 = 180 - Math.abs(Math.abs(getLocalAngle(points, ll) - getLocalAngle(points, choice1, ll)) - 180);
+                            double diff2 = 180 - Math.abs(Math.abs(getLocalAngle(points, ll) - getLocalAngle(points, choice2, ll)) - 180);
+                            if (diff1 < diff2) {
+                                for (Point p : tmp1) {
+                                    points.add(p);
+                                }
+                                currentPoint = choice1;
+                            } else {
+                                for (Point p : tmp2) {
+                                    points.add(p);
+                                }
+                                currentPoint = choice2;
+                            }
+                        }
+                    }
+                }
+               
+         
                 //Creating points with continous coordinates
                 ArrayList<Vector2> continousPoints = new ArrayList<Vector2>();
                 for(Point p: points) {
@@ -231,13 +342,16 @@ public class Detector {
                         maxLenR = r;
                     }
                 }
+                 System.out.println(maxLenR);
                 minLenR.normalize();
                 maxLenR.normalize();
                 
                 double minMaxAngle = Math.acos(Vector2.dotProduct(minLenR, maxLenR));
                 minMaxAngle *= 180.0 / Math.PI;
-            
+                
+               
                 //Shape creation
+                
                 Shape shape;
                 if(Math.abs(minMaxAngle - 90.0) > 5.0) {
                     shape = new Rect(continousPoints, center);
@@ -250,6 +364,7 @@ public class Detector {
                 shapes.add(shape);
             }
         }
+        
         //redraw();
     }
 
