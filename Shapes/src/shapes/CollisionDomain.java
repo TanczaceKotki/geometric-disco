@@ -13,7 +13,7 @@ public class CollisionDomain implements ShapeObserver {
         shapes = new ArrayList<Shape>();
         collisions = new ArrayList<Collision>();
     }
-    
+
     
     public Shape getShape(int index) {
         return shapes.get(index);

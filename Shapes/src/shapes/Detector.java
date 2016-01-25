@@ -342,14 +342,14 @@ public class Detector {
                         maxLenR = r;
                     }
                 }
-                 System.out.println(maxLenR);
+                
                 minLenR.normalize();
                 maxLenR.normalize();
                 
                 double minMaxAngle = Math.acos(Vector2.dotProduct(minLenR, maxLenR));
                 minMaxAngle *= 180.0 / Math.PI;
                 
-               
+
                 //Shape creation
                 
                 Shape shape;

@@ -65,6 +65,7 @@ public class GUI extends javax.swing.JFrame {
         }
         
         Detector detector = new Detector(image);
+        canvas.setDomain(collisionDomain);
         for(Shape shape: detector.shapes) {
             collisionDomain.addShape(shape);
         }
@@ -319,7 +320,7 @@ public class GUI extends javax.swing.JFrame {
             Image image = ImageIO.read(file);
             ImageIcon icon = new ImageIcon(image);
             preview.setIcon(icon);
-            collisionDomain.shapes.clear();
+            collisionDomain = new CollisionDomain();
             
             //Loading file
             loadFile(path);
