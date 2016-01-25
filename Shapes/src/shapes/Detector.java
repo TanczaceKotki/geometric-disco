@@ -316,7 +316,6 @@ public class Detector {
                 }
                
          
-                //Creating points with continous coordinates
                 ArrayList<Vector2> continousPoints = new ArrayList<Vector2>();
                 for(Point p: points) {
                     continousPoints.add(new Vector2(p.x, p.y));      
@@ -343,17 +342,16 @@ public class Detector {
                     }
                 }
                 
-                minLenR.normalize();
-                maxLenR.normalize();
-                
-                double minMaxAngle = Math.acos(Vector2.dotProduct(minLenR, maxLenR));
-                minMaxAngle *= 180.0 / Math.PI;
-                
-
-                //Shape creation
-                
+                int count = 0;
+                for(Vector2 p : continousPoints) {
+                    Vector2 r = Vector2.diff(p, center);
+                    if(Math.abs(r.length() - maxLenR.length()) < 0.3){
+                        count++;
+                    }
+                }
                 Shape shape;
-                if(Math.abs(minMaxAngle - 90.0) > 5.0) {
+                System.out.println(count);
+                if(count <= 8) {
                     shape = new Rect(continousPoints, center);
                 } else {
                     shape = new Ellipse(continousPoints, center);
